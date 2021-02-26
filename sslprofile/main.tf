@@ -37,8 +37,8 @@ resource "bigip_ltm_profile_server_ssl" "serverSSL" {
   defaults_from = "/${var.PARTITION}/serverssl"
   authenticate  = "always"
   ciphers       = "DEFAULT"
-  key           = "${var.CERTIFICATE}.key"
-  cert          = "${var.CERTIFICATE}.certificate"
+  key           = "/${var.PARTITION}/${var.CERTIFICATE}.key"
+  cert          = "/${var.PARTITION}/${var.CERTIFICATE}.certificate"
   depends_on    = [bigip_ssl_key.private, bigip_ssl_certificate.public]
 }
 
