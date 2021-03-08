@@ -39,12 +39,12 @@ resource "bigip_ltm_monitor" "monitor" {
 }
 
 resource "bigip_ltm_pool" "pool" {
-    name = "/${var.PARTITION}/${var.POOL_NAME}"
-    monitors = [ bigip_ltm_monitor.monitor.name]
-    allow_nat = "yes"
-    allow_snat = "yes"
+    name                = "/${var.PARTITION}/${var.POOL_NAME}"
+    monitors            = [ bigip_ltm_monitor.monitor.name ]
+    allow_nat           = "yes"
+    allow_snat          = "yes"
     load_balancing_mode = "round-robin"
-    depends_on = [bigip_ltm_monitor.monitor]
+    depends_on          = [ bigip_ltm_monitor.monitor ]
 }
 
 resource "bigip_ltm_pool_attachment" "attach_node" {

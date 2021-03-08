@@ -65,3 +65,22 @@ openssl.exe pkcs12 -export -in .ssl\forgerock.certificate -inkey .ssl\forgerock.
 ```bash
 keytool -importkeystore -deststorepass Passw0rd -destkeystore .ssl\fr-clientauth.jks -srckeystore .ssl\forgerock.p12 -srcstoretype PKCS12 -srcstorepass Passw0rd -alias forgerock
 ```
+
+
+## Openssl
+
+```bash
+mkdir CertificateAuthCA
+cd CertificateAuthCA
+openssl genrsa -des3 -out myca.key 4096
+openssl req -new -x509 -days 3650 -key myca.key -out myca.crt
+openssl genrsa -des3 -out testuser.key 2048
+openssl req -new -key testuser.key -out testuser.csr
+openssl x509 -req -days 365 -in testuser.csr -CA myca.crt -CAkey myca.key -set_serial 01 -out testuser.crt
+openssl pkcs12 -export -out testuser.pfx -inkey testuser.key -in testuser.crt -certfile myca.crt
+
+openssl genrsa -des3 -out testuser-invalid.key 2048
+openssl req -new -key testuser-invalid.key -out testuser-invalid.csr
+openssl x509 -req -days 365 -in testuser-invalid.csr -CA myca.crt -CAkey myca.key -set_serial 02 -out testuser-invalid.crt
+openssl pkcs12 -export -out testuser-invalid.pfx -inkey testuser-invalid.key -in testuser-invalid.crt -certfile myca.crt
+```

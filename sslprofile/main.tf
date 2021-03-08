@@ -7,6 +7,16 @@ variable "CERTIFICATE" {
   type = string
 }
 
+variable "CLIENT_CIPHER" {
+  type = string
+  default = "DEFAULT"
+}
+
+variable "SERVER_CIPHER" {
+  type = string
+  default = "DEFAULT"
+}
+
 
 resource "bigip_ssl_key" "private" {
   name      = "${var.CERTIFICATE}.key"
@@ -25,7 +35,7 @@ resource "bigip_ltm_profile_client_ssl" "clientSSL" {
   partition     = var.PARTITION
   defaults_from = "/${var.PARTITION}/clientssl"
   authenticate  = "always"
-  ciphers       = "DEFAULT"
+  ciphers       = var.CLIENT_CIPHER
   key           = "/${var.PARTITION}/${var.CERTIFICATE}.key"
   cert          = "/${var.PARTITION}/${var.CERTIFICATE}.certificate"
   depends_on    = [bigip_ssl_key.private, bigip_ssl_certificate.public]
@@ -36,7 +46,7 @@ resource "bigip_ltm_profile_server_ssl" "serverSSL" {
   partition     = var.PARTITION
   defaults_from = "/${var.PARTITION}/serverssl"
   authenticate  = "always"
-  ciphers       = "DEFAULT"
+  ciphers       = var.SERVER_CIPHER
   key           = "/${var.PARTITION}/${var.CERTIFICATE}.key"
   cert          = "/${var.PARTITION}/${var.CERTIFICATE}.certificate"
   depends_on    = [bigip_ssl_key.private, bigip_ssl_certificate.public]
